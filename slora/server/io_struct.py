@@ -15,6 +15,7 @@ class Req:
         self.output_metadata_list = []
         self.has_generate_finished = False
         self.aborted = False
+        print(f"Request id:{request_id}, adpater dir:{adapter_dir}, prompt ids:{prompt_ids}, ignore eos:{self.sample_params.ignore_eos}")
 
     def to_rpc_obj(self):
         return {"adapter_dir": self.adapter_dir,
@@ -62,6 +63,7 @@ class ReqDetokenizationState:
         self.max_output_len = max_output_len
         self.ignore_eos = ignore_eos
         self.gen_metadata = {}
+        print(f"Request Detoken id:{request_id}, prompt ids:{prompt_ids}")
 
 
 class Batch:

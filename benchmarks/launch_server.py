@@ -76,13 +76,13 @@ if __name__ == "__main__":
         cmd = f"python -m lightllm.server.api_server" \
               f" --model_dir {base_model} --tp 1 --max_total_token_num {args.num_token}" \
               f" --tokenizer_mode auto" \
-              f" --host 127.0.0.1 --port 8000"
+              f" --host 127.0.0.1 --port 13000"
 
     elif args.backend == "vllm":
         cmd = f"python -m vllm.entrypoints.api_server" \
               f" --model {base_model} --swap-space 16" \
               f" --disable-log-requests" \
-              f" --host 127.0.0.1 --port 8000"
+              f" --host 127.0.0.1 --port 13000"
 
     elif args.backend == "vllm-packed":
         gpu_memory = args.vllm_mem_ratio / (args.num_adapter)
@@ -94,7 +94,7 @@ if __name__ == "__main__":
                     f" --model {base_model} --swap-space 0" \
                     f" --gpu-memory-utilization {gpu_memory}" \
                     f" --disable-log-requests" \
-                    f" --host 127.0.0.1 --port {8000 + i}"
+                    f" --host 127.0.0.1 --port {13000 + i}"
                 os.system(cmd)
                 sys.exit(0)
 
@@ -103,5 +103,5 @@ if __name__ == "__main__":
 
         sys.exit(0)
 
-    # print(cmd)
+    print(f"The lanch command will be execute: {cmd}, base model:{base_model}")
     os.system(cmd)

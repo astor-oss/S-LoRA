@@ -217,7 +217,7 @@ def get_res_stats(per_req_latency, benchmark_time, backend, warmup_time=0, warmu
     return res
 
 
-def run_exp(model_setting, backend, server, config, output, mode, seed=42, debug=False):
+def run_exp(model_setting, backend, server, config, output, mode, seed=42, debug=True):
     if mode == "real":
         print("*** num_adapters, cv and alpha are not used in real mode ***")
     print([(k, v) for k, v in zip(BenchmarkConfig._fields, config)])
@@ -227,7 +227,9 @@ def run_exp(model_setting, backend, server, config, output, mode, seed=42, debug
     if mode == "synthetic":
         base_model = BASE_MODEL[model_setting]
         adapter_dirs = LORA_DIR[model_setting]
+        print(f"Input base model path: {base_model}, adapter dirs: {adapter_dirs}")
         adapter_dirs = get_adapter_dirs(num_adapters, adapter_dirs)
+        print(f"Input base model path: {base_model}, adapter dirs: {adapter_dirs}")
         adapter_dirs = [(base_model, adapter_dirs[i]) for i in range(num_adapters)]
         if num_adapters == 0:
             adapter_dirs = [(base_model, None)]
@@ -261,7 +263,7 @@ def run_exp(model_setting, backend, server, config, output, mode, seed=42, debug
 
     if backend == "vllm-packed":
         for i in range(len(adapter_dirs)):
-            vllm_packed_adapter_dir_to_url_map[adapter_dirs[i][1]] = f"http://127.0.0.1:{8000 + i}"
+            vllm_packed_adapter_dir_to_url_map[adapter_dirs[i][1]] = f"http://127.0.0.1:{13000 + i}"
 
     # benchmark
     benchmark_start_time = time.time()

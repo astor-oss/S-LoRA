@@ -63,6 +63,7 @@ class RouterManager:
         self.load_way = load_way
         self.mode = mode
         self.input_params = input_params
+        print(f"Route manager model weight dir:{weightdir}, adapter dir:{adapter_dirs} mode:{mode}")
 
         if self.input_params.prefetch:
             self.prefetch_stream = torch.cuda.Stream()
@@ -89,6 +90,7 @@ class RouterManager:
         
         self.send_to_detokenization = context.socket(zmq.PUSH)
         self.send_to_detokenization.connect(f"tcp://127.0.0.1:{detokenization_port}")
+        print(f"Route manager router port:{router_port}, detoken port:{detokenization_port}, model rpc ports:{model_rpc_ports}")
         self.model_rpc_ports = model_rpc_ports
 
         self.stats_tool = Stats(log_stats, log_stats_interval)
@@ -188,10 +190,13 @@ class RouterManager:
                 self.stats_tool.count_prompt_tokens(new_batch)
                 self.running_batch = new_batch
 
+                print(f"====> input param is lora: { not self.input_params.no_lora }, word size:{self.world_size}")
+
                 if not self.input_params.no_lora:
                     # load adapters
                     ret = []
                     for tp_rank in range(self.world_size):
+                        print(f"====> input param is lora: { not self.input_params.no_lora }, word size:{self.world_size} rank:{tp_rank}, adapter dir:{new_batch.adapter_dirs}")
                         ret.append(self.model_rpcs[tp_rank].load_adapters(new_batch.adapter_dirs))
                     await asyncio.gather(*ret)
 
@@ -210,6 +215,7 @@ class RouterManager:
                 self.has_wait_tokens = 0
             return
 
+        print(f"===> has wait tokens: {self.has_wait_tokens} and max wait tokens: {self.max_wait_tokens}")
         if self.has_wait_tokens < self.max_wait_tokens:
             self.stats_tool.count_output_tokens(self.running_batch)
             # prefetch
@@ -357,8 +363,10 @@ class RouterManager:
     async def loop_for_netio_req(self):
         while True:
             recv_req = await self.recv_from_httpserver.recv_pyobj()
+            print(f"Route Manager recv request is: {recv_req}")
             if isinstance(recv_req, tuple) and len(recv_req) == 4:
                 adapter_dir, prompt_ids, sampling_params, request_id = recv_req
+                print(f"Route Manager recv request is: {request_id}, adapter dir:{adapter_dir}, prompt ids:{prompt_ids}")
                 self.add_req(adapter_dir, prompt_ids, sampling_params, request_id)
             elif isinstance(recv_req, AbortReq):
                 abort_req = recv_req

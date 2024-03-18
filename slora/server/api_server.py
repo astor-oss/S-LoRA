@@ -96,13 +96,17 @@ async def generate(request: Request) -> Response:
         request_id = request_dict["req_id"]
     else:
         request_id = uuid.uuid4().hex
+
+    print(f"===>Generator receive request is: {request_dict}, adapter dir:{adapter_dir}, request_id: {request_id}, prompt: {prompt}")
     results_generator = httpserver_manager.generate(adapter_dir, prompt, sampling_params, request_id)
+    print(f"===>Generator receive request about response is: {request_id}, result generator:{results_generator}")
 
     # Non-streaming case
     final_output = []
     count_output_tokens = 0
     tokens = []
     async for request_output, metadata, finished in results_generator:
+        print(f"==++++++++> Receive response request id: {request_id}, request_output:{request_output} metadata:{metadata}, finished:{finished}")
         count_output_tokens += 1
         if finished == -1:
             return Response(status_code=499)
@@ -135,6 +139,7 @@ async def generate_stream(request: Request) -> Response:
 
     request_dict = await request.json()
     adapter_dir = request_dict["lora_dir"] if "lora_dir" in request_dict else None
+    print(f"===>receive request is: {request_dict}, adapter dir:{adapter_dir}")
     prompt = request_dict.pop("inputs")
     sample_params_dict = request_dict["parameters"]
     return_details = sample_params_dict.pop("return_details", False)
@@ -162,6 +167,7 @@ async def generate_stream(request: Request) -> Response:
                 "details": None
             }
 
+            print(f"stream results is:{ret}")
             yield ("data:" + json.dumps(ret, ensure_ascii=False) + f"\n\n").encode(
                 "utf-8"
             )
@@ -277,6 +283,8 @@ async def chat_completions(
     # Abort the request if the client disconnects.
     background_tasks.add_task(abort_request)
 
+    print(f"Stream result is: {stream_results()}")
+
     return StreamingResponse(
         stream_results(), media_type="text/event-stream", background=background_tasks
     )
@@ -285,6 +293,9 @@ async def chat_completions(
 def print_mem_stats(args):
     model_dir = args.model_dir
     model_name = args.model_dir.split("/")[-1]
+    print(f"Huzx===> Input model dir:{model_dir}")
+    print(f"Huzx===> Input model name:{model_name}")
+
     try:
         fake_model = ModelProphet(model_name, model_dir=model_dir)
     except:
@@ -360,7 +371,7 @@ def main():
                         help="the adapter weight dirs associate with base model dir")
     parser.add_argument("--fair-weights", type=int, default=[], action="append")
     parser.add_argument("--dummy", action="store_true")
-    parser.add_argument("--swap", action="store_true")
+    parser.add_argument("--swap", action="store_false")
     parser.add_argument("--pool-size-lora", type=int, default=0)
     parser.add_argument("--prefetch", action="store_true")
     parser.add_argument("--prefetch-size", type=int, default=0)
@@ -383,7 +394,9 @@ def main():
 
     assert args.max_req_input_len < args.max_req_total_len
     setting["max_req_total_len"] = args.max_req_total_len
+    print(f"====================>Nccl Port:{args.nccl_port}")
     setting["nccl_port"] = args.nccl_port
+    print(f"Run command with args: {args}")
 
     if args.batch_max_tokens is None:
         batch_max_tokens = int(1 / 6 * args.max_total_token_num)
@@ -399,6 +412,7 @@ def main():
     )
     router_port, detokenization_port, httpserver_port = can_use_ports[0:3]
     model_rpc_ports = can_use_ports[3:]
+    print(f"============> model rpc ports:{model_rpc_ports} model dir:{args.model_dir}")
 
     global httpserver_manager
     httpserver_manager = HttpServerManager(

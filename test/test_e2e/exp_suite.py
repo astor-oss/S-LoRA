@@ -26,7 +26,7 @@ breakdown_suite = {
     # ),
 
     "test": BenchmarkConfig(
-        num_adapters = [4],
+        num_adapters = [2],
         alpha = [0.8],
         req_rate = [6],
         cv = [1],

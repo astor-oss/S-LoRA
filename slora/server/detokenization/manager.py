@@ -34,9 +34,11 @@ class DeTokenizationManager:
         while True:
             try:
                 recv_obj:Union(BatchTokenIdOut, ReqDetokenizationState, AbortReq, BatchAbortReq) = await self.recv_from_router.recv_pyobj() 
+                print(f"====> handle loop type is: {recv_obj} status")
                 assert isinstance(recv_obj, (BatchTokenIdOut, ReqDetokenizationState, AbortReq, BatchAbortReq)), f"type is not right {type(recv_obj)}"
                 if isinstance(recv_obj, ReqDetokenizationState):
                     self.req_id_to_out[recv_obj.request_id] = recv_obj
+                    print(f"====> load request id:{recv_obj.request_id} to req id to out: {recv_obj.prompt_ids}")
                 
                 if isinstance(recv_obj, AbortReq):
                     delete_req_id = recv_obj.req_id
@@ -58,6 +60,7 @@ class DeTokenizationManager:
                         req_out.output_ids.append(new_token_id)
                         req_out.gen_metadata.update(new_gen_metadata)
                         out_text = decode_token(self.tokenizer, req_out, new_token_id, skip_special_tokens=True)
+                        print(f"====> load BatchTokenIdOut request: {req_id}, new token id:{new_token_id}, new meta:{new_gen_metadata}, out_text:{out_text}")
                         if out_text.endswith(u'\ufffd'):
                             new_text = ''
                         else:

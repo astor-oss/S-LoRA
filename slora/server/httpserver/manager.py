@@ -31,6 +31,7 @@ class HttpServerManager:
 
         try: 
             self.tokenizer = get_tokenizer(model_weightdir, tokenizor_mode, trust_remote_code=trust_remote_code) 
+            print(f"Huzx===> tokenizer is model_weight dir:{model_weightdir}, trust remote:{trust_remote_code}")
         except:
             if dummy:
                 self.tokenizer = get_tokenizer("huggyllama/llama-7b", tokenizor_mode) 
@@ -74,7 +75,9 @@ class HttpServerManager:
             if request_id not in self.req_id_to_out_inf:
                 yield "", {}, -1
                 break
+        
             out_str, metadata, finished, _ = self.req_id_to_out_inf[request_id]
+            print(f"huzx===> out str:{out_str}, request_id:{request_id}, metadata:{metadata}, finished: {finished}")
             if len(metadata) != 0:
                 self.req_id_to_out_inf[request_id] = ("", {}, finished, event)
                 metadata["prompt_tokens"] = prompt_tokens
@@ -104,6 +107,7 @@ class HttpServerManager:
                 for req_id, text, metadata, finished, abort in recv_ans.reqs_infs:
                     try:
                         if not abort:
+                            print(f"=> handle loop req_id:{req_id}, text:{text}, meta:{metadata}, finished:{finished}")
                             _, _, _, event = self.req_id_to_out_inf[req_id]
                             self.req_id_to_out_inf[req_id] = (
                                 text,

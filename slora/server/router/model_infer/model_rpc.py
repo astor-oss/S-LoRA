@@ -85,6 +85,7 @@ class ModelRpcServer(rpyc.Service):
         self.adapter_id = {}
         for adapter_dir in tqdm(adapter_dirs, desc="load adapters"):
             self.adapter_id[adapter_dir] = len(self.adapters)
+            print(f"=====> rank id:{rank_id} adapter dir:{adapter_dir}")
             self.adapters.append(LoraTpPartAdapter(rank_id, world_size, adapter_dir, model_cfg,
                                                    swap=input_params.swap, dummy=input_params.dummy,
                                                    no_lora_swap=input_params.no_lora_swap,
@@ -116,6 +117,7 @@ class ModelRpcServer(rpyc.Service):
             self.infer_adapter.load_adapters(adapters, prefetch=prefetch)
         else:
             for adapter_dir in adapter_dirs:
+                print(f"====> will load adapter dir:{adapter_dir} to gpu")
                 if adapter_dir is not None:
                     self.adapters[self.adapter_id[adapter_dir]].load_to_gpu(prefetch=prefetch, bmm=True)
             print(f"load {len(adapter_dirs)} on gpu")

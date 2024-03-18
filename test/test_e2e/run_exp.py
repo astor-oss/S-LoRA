@@ -6,6 +6,7 @@ import numpy as np
 import os
 import sys
 import time
+import uuid
 from tqdm import tqdm
 from typing import List, Tuple
 
@@ -45,6 +46,7 @@ async def send_request(
     headers = {"User-Agent": "Benchmark Client"}
     url = server + "/generate"
     data = {
+        'req_id': uuid.uuid4().hex,
         'model_dir': model_dir,
         'lora_dir': adapter_dir,
         'inputs': prompt,
@@ -56,6 +58,7 @@ async def send_request(
         }
     }
 
+    print(f"Will send request is: {data}, header:{headers}, url:{url}")
 
     first_token_latency = None
     timeout = aiohttp.ClientTimeout(total=3 * 3600)
@@ -69,8 +72,8 @@ async def send_request(
                     chunks.append(chunk)
             output = b"".join(chunks).decode("utf-8")
             output = json.loads(output)
-            print(data["lora_dir"])
-            print(output)
+            print("response is:===>" + data["lora_dir"])
+            print("response is:===>" + output)
             if "alpaca-lora-7b" in data["lora_dir"] and id==0:
                 output_ref = b'I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help'
                 assert output['generated_text'][0].encode() == output_ref
@@ -126,13 +129,21 @@ def run_exp(server, config, seed=42):
 
     num_adapters, alpha, req_rate, cv, duration, input_range, output_range = config
     # assert duration >= 30
-    adapter_dirs = get_adapter_dirs(num_adapters)
+    # adapter_dirs = get_adapter_dirs(num_adapters)
+    print(f"Huzx input args: num adpater:{num_adapters}, {alpha}, {req_rate}, {cv}, {duration}, {input_range}, {output_range}")
+
+    base_model = "meta-llama/Llama-2-13b-hf"
+    adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-1000/", 
+                    "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-2000/"]
+
     adapter_dirs = [(base_model, adapter_dirs[i]) for i in range(num_adapters)]
+    print(f"adapter dirs: {adapter_dirs}")
 
     # generate requests
     requests1 = generate_requests(num_adapters, alpha, req_rate, cv, duration,
                                  input_range, output_range, adapter_dirs,
                                  seed=seed, id=0)
+    print(f'request is {requests1}')
     requests2 = generate_requests(num_adapters, alpha, req_rate, cv, duration,
                                  input_range, output_range, adapter_dirs,
                                  seed=seed, id=1)

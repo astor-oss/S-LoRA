@@ -132,9 +132,11 @@ def run_exp(server, config, seed=42):
     # adapter_dirs = get_adapter_dirs(num_adapters)
     print(f"Huzx input args: num adpater:{num_adapters}, {alpha}, {req_rate}, {cv}, {duration}, {input_range}, {output_range}")
 
-    base_model = "meta-llama/Llama-2-13b-hf"
-    adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-1000/", 
-                    "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-2000/"]
+    base_model = "huggyllama/llama-7b"
+    adapter_dirs = ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"]
+    # base_model = "meta-llama/Llama-2-13b-hf"
+    # adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-1000/", 
+    #                "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-2000/"]
 
     adapter_dirs = [(base_model, adapter_dirs[i]) for i in range(num_adapters)]
     print(f"adapter dirs: {adapter_dirs}")

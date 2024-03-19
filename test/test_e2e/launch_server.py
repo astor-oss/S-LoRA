@@ -2,15 +2,15 @@ import argparse
 import os
 
 # base_model = "dummy-llama-7b"
-# base_model = "huggyllama/llama-7b"
-# adapter_dirs = ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"]
+base_model = "huggyllama/llama-7b"
+adapter_dirs = ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"]
 
-base_model = "meta-llama/Llama-2-13b-hf"
 # base_model = "huggyllama/llama-7b"
 #adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b/checkpoint-10/", 
 #                "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b/checkpoint-20/"]
-adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-1000/", 
-                "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-2000/"]
+#base_model = "meta-llama/Llama-2-13b-hf"
+#adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-1000/", 
+#                "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b/checkpoint-2000/"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

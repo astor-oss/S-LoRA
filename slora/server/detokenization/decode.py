@@ -32,8 +32,10 @@ def decode_token(
             req.sub_texts.append(sub_text)
             req.current_sub_text = []
         req.sub_texts.append(new_token)
+        print("Decoder token:1 " + "".join(req.sub_texts))
         return " ".join(req.sub_texts)
     else:
         req.current_sub_text.append(new_token)
         new_sub_text = tokenizer.convert_tokens_to_string(req.current_sub_text)
+        print("Decoder token:2: " + "".join(req.sub_texts + [new_sub_text]))
         return " ".join(req.sub_texts + [new_sub_text])

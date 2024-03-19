@@ -47,6 +47,7 @@ class ModelRpcServer(rpyc.Service):
         self.mode = mode
         self.input_params = input_params
         self.prefetch_stream = prefetch_stream
+        print(f"ModelRpc Server init: rank:{rank_id}, world_size:{world_size}, mode:{mode}, input_param:{input_params}, prefetch: {prefetch_stream}")
 
         self.cache = {}
 
@@ -447,6 +448,7 @@ class ModelRpcClient:
 
 
     async def init_batch(self, batch_id, reqs):
+        print(f"append batch {batch_id} with requests:{len(reqs)}")
         ans = self._add_batch(batch_id, reqs, "fp16")
         if self.use_rpc:
             await ans

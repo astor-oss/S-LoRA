@@ -63,7 +63,7 @@ class RouterManager:
         self.load_way = load_way
         self.mode = mode
         self.input_params = input_params
-        print(f"Route manager model weight dir:{weightdir}, adapter dir:{adapter_dirs} mode:{mode}")
+        print(f"Route manager model weight dir:{weightdir}, adapter dir:{adapter_dirs} mode:{mode} world size:{world_size}")
 
         if self.input_params.prefetch:
             self.prefetch_stream = torch.cuda.Stream()
@@ -183,6 +183,7 @@ class RouterManager:
         # 删除所有已经 finished 的 req
         if self.running_batch is None:
             new_batch = self.req_queue.generate_new_batch(self.running_batch, self.lora_ranks)
+            print(f"Will running batch: {self.running_batch}, lora ranks:{self.lora_ranks}, new batch:{new_batch}")
             if self.input_params.enable_abort and len(self.req_queue.abort_req_list) > 0:
                 self.send_to_detokenization.send_pyobj(BatchAbortReq(self.req_queue.abort_req_list))
                 self.req_queue.reset_abort_list()
@@ -235,6 +236,7 @@ class RouterManager:
             self.has_wait_tokens += 1
             return
         else:
+            print(f"AAAAWill genrate new batch===>: {self.running_batch}, lora ranks:{self.lora_ranks}")
             new_mini_batch = self.req_queue.generate_new_batch(self.running_batch, self.lora_ranks)
             if self.input_params.enable_abort and len(self.req_queue.abort_req_list) > 0:
                 self.send_to_detokenization.send_pyobj(BatchAbortReq(self.req_queue.abort_req_list))
@@ -262,6 +264,7 @@ class RouterManager:
     async def _init_batch(self, batch: Batch):
         reqs = [r.to_rpc_obj() for r in batch.reqs]
         rets = [self.model_rpcs[tp_rank].init_batch(batch.batch_id, reqs) for tp_rank in range(self.world_size)]
+        print(f"Init batch request count:{len(reqs)}, expect rets:{len(rets)}")
         await asyncio.gather(*rets)
         return
 

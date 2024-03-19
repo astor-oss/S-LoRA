@@ -23,6 +23,7 @@ class DeTokenizationManager:
         self.send_to_httpserver.connect(f"tcp://127.0.0.1:{httpserver_port}")
         
         try: 
+            print(f"Get tokenizer model: {model_weightdir}, trust remote code: {trust_remote_code}")
             self.tokenizer = get_tokenizer(model_weightdir, tokenizor_mode, trust_remote_code=trust_remote_code) 
         except:
             if dummy:

@@ -74,6 +74,7 @@ class RouterManager:
         for lora_dir in adapter_dirs:
             config, _ = get_lora_config(lora_dir, input_params.dummy)
             self.lora_ranks[lora_dir] = config["r"]
+            print("Huzx=> lora dir:" + lora_dir + ", config r:" + str(config["r"]) + "dummy: " + str(input_params.dummy))
         self.lora_ranks[None] = 0
 
         self.req_queue = get_scheduler(input_params, adapter_dirs)

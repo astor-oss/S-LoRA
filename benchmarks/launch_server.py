@@ -48,9 +48,8 @@ if __name__ == "__main__":
         cmd += f" --tokenizer_mode auto"
 
         num_iter = args.num_adapter // len(adapter_dirs) + 1
-        for i in range(num_iter):
-            for adapter_dir in adapter_dirs:
-                cmd += f" --lora {adapter_dir}-{i}"
+        for adapter_dir in adapter_dirs:
+            cmd += f" --lora {adapter_dir}"
 
         if args.dummy:
             cmd += " --dummy"

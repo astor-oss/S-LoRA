@@ -97,7 +97,7 @@ async def send_request(
                     chunks.append(chunk)
             output = b"".join(chunks).decode("utf-8")
             # output = json.loads(output)
-            # print(output)
+            print("Output is:" + output)
             
             if '\"finished\": -1' not in output:
                 break
@@ -146,7 +146,8 @@ def get_adapter_dirs(num_adapters, adapter_dirs, backend=None):
 
     for i in range(num_iter):
         for adapter_dir in adapter_dirs:
-            ret.append(adapter_dir + f"-{i}")
+            ret.append(adapter_dir)
+            # ret.append(adapter_dir + f"-{i}")
     return ret
 
 def get_res_stats(per_req_latency, benchmark_time, backend, warmup_time=0, warmup_num=0):
@@ -223,12 +224,18 @@ def run_exp(model_setting, backend, server, config, output, mode, seed=42, debug
     print([(k, v) for k, v in zip(BenchmarkConfig._fields, config)])
 
     num_adapters, alpha, req_rate, cv, duration, input_range, output_range = config
+    print(f"number adapters:{num_adapters}, duration:{duration}, input_range:{input_range}, out range:{output_range}, mode:{mode}")
     # assert duration >= 30
     if mode == "synthetic":
         base_model = BASE_MODEL[model_setting]
         adapter_dirs = LORA_DIR[model_setting]
         adapter_dirs = get_adapter_dirs(num_adapters, adapter_dirs)
+
         adapter_dirs = [(base_model, adapter_dirs[i]) for i in range(num_adapters)]
+
+        for i in range(num_adapters):
+            print(f"Index: {i}, adapter dir:{adapter_dirs[i]}")
+
         if num_adapters == 0:
             adapter_dirs = [(base_model, None)]
             num_adapters = 1

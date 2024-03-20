@@ -50,6 +50,8 @@ class HttpServerManager:
                 f"the input prompt token len {prompt_tokens} is too long > {self.max_req_input_len}"
             )
         req_total_len = prompt_tokens + sampling_params.max_new_tokens
+        print(f"Generator request total len:{req_total_len}, prompt tokens:{prompt_tokens}, max_new_tokens:{sampling_params.max_new_tokens}, total token:{self.total_token_num}")
+
         if req_total_len > self.max_req_total_len:
             raise ValueError(
                 f"the req token total len (input len + output len) is too long > max_req_total_len:{self.max_req_total_len}"
@@ -58,6 +60,7 @@ class HttpServerManager:
             raise ValueError(
                 f"the req token total len + 1 (input len + output len + 1) is too long > max_total_token_num:{self.total_token_num}"
             )
+        
         
         sampling_params.stop_sentences_to_token_ids(self.tokenizer)
 

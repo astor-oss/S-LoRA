@@ -29,6 +29,7 @@ class ReqQueue:
                                            req.max_output_len - len(req.output_ids) - 1))
                 if req.adapter_dir not in self.adapters:
                     self.adapter_size += lora_ranks[req.adapter_dir] * 4
+                    print(f"Init cache list req adapter dir:{req.adapter_dir}, adapters size: {len(self.adapters)}")
                     self.adapters.add(req.adapter_dir)
         else:
             self.cache_len_list = []
@@ -39,6 +40,7 @@ class ReqQueue:
     def _can_add_new_req(self, req, lora_ranks):
         self.cache_len_list.append((req.input_len + 1, req.max_output_len - 1)) # hard to analysis
         self.cache_len_list.sort(key=lambda x: -x[1])
+
         if req.adapter_dir not in self.adapters:
             self.adapter_size += lora_ranks[req.adapter_dir] * 4
             self.adapters.add(req.adapter_dir)

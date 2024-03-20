@@ -68,9 +68,8 @@ async def send_request(
                         first_token_latency = time.time() - request_start_time
                     chunks.append(chunk)
             output = b"".join(chunks).decode("utf-8")
-            output = json.loads(output)
-            print(data["lora_dir"])
-            print(output)
+            #output = json.loads(output)
+            print("Huzx==>" + data["lora_dir"] + ", output:" + output)
             if "alpaca-lora-7b" in data["lora_dir"] and id==0:
                 output_ref = b'I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help you create a plan that works for you and your unique needs. I am here to help'
                 assert output['generated_text'][0].encode() == output_ref
@@ -115,9 +114,8 @@ async def benchmark(
 
 def get_adapter_dirs(num_adapters):
     ret = []
-    for i in range(num_adapters // len(adapter_dirs) + 1):
-        for adapter_dir in adapter_dirs:
-            ret.append(adapter_dir + f"-{i}")
+    for adapter_dir in adapter_dirs:
+        ret.append(adapter_dir)
     return ret
 
 
@@ -127,7 +125,7 @@ def run_exp(server, config, seed=42):
     num_adapters, alpha, req_rate, cv, duration, input_range, output_range = config
     # assert duration >= 30
     adapter_dirs = get_adapter_dirs(num_adapters)
-    adapter_dirs = [(base_model, adapter_dirs[i]) for i in range(num_adapters)]
+    adapter_dirs = [(base_model, adapter_dirs[i % len(adapter_dirs)]) for i in range(num_adapters)]
 
     # generate requests
     requests1 = generate_requests(num_adapters, alpha, req_rate, cv, duration,

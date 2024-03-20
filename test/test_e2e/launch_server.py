@@ -29,9 +29,8 @@ if __name__ == "__main__":
     cmd += f" --pool-size-lora {args.pool_size_lora}"
 
     num_iter = args.num_adapter // len(adapter_dirs) + 1
-    for i in range(num_iter):
-        for adapter_dir in adapter_dirs:
-            cmd += f" --lora {adapter_dir}-{i}"
+    for adapter_dir in adapter_dirs:
+        cmd += f" --lora {adapter_dir}"
 
     cmd += " --swap"
     # cmd += " --scheduler pets"
@@ -43,4 +42,5 @@ if __name__ == "__main__":
     if args.no_mem_pool:
         cmd += " --no-mem-pool"
 
+    print(f"Final run command is: {cmd}")
     os.system(cmd)

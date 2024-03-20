@@ -104,7 +104,6 @@ async def generate(request: Request) -> Response:
     tokens = []
     async for request_output, metadata, finished in results_generator:
         count_output_tokens += 1
-        print(f"===> request output: {request_output}, metadata: {metadata} finish: {finished}")
         if finished == -1:
             return Response(status_code=499)
         if await request.is_disconnected():
@@ -123,7 +122,9 @@ async def generate(request: Request) -> Response:
     }
     if return_details:
         ret["tokens"] = tokens
-    print("Huzx=> output result is:" + json.dumps(ret, ensure_ascii=False).encode("utf-8"))
+    
+    str_final = ' '.join(final_output)
+    print("Huzx=> output result is:" + str_final)
     return Response(content=json.dumps(ret, ensure_ascii=False).encode("utf-8"))
 
 

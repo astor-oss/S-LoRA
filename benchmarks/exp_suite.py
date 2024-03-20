@@ -7,6 +7,7 @@ BASE_MODEL = {
         "S3": "huggyllama/llama-13b",
         "S4": "huggyllama/llama-13b",
         "Real": "huggyllama/llama-7b",
+        "Huzx": "huggyllama/llama-7b",
 }
 
 LORA_DIR = {
@@ -17,6 +18,10 @@ LORA_DIR = {
         "S4": ["dummy-lora-13b-rank-64",
                "dummy-lora-13b-rank-32", "dummy-lora-13b-rank-16",],
         "Real": ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"],
+        "Huzx": [
+            "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b/checkpoint10",
+            "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b/checkpoint20"
+        ]
 }
 
 BenchmarkConfig = namedtuple(

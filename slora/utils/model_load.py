@@ -11,6 +11,7 @@ def get_lock(model_name_or_path: str, cache_dir: str = None):
     return lock
 
 def hf_load_config(weights_dir, mode="adapter"):
+    print(f"hf_load_config weights dir:{weights_dir}")
     is_local = os.path.isdir(weights_dir)
     if not is_local:
         # Use file lock to prevent multiple processes from

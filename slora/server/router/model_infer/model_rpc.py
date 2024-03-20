@@ -57,6 +57,7 @@ class ModelRpcServer(rpyc.Service):
 
         try:
             self.model_type = model_cfg["model_type"]
+            print(f"model cfg:{model_cfg}")
             if self.model_type == "llama":
                 if "num_key_value_heads" in model_cfg.keys():
                     self.model = Llama2TpPartModel(rank_id, world_size, weight_dir,

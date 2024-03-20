@@ -2,8 +2,11 @@ import argparse
 import os
 
 # base_model = "dummy-llama-7b"
+# base_model = "huggyllama/llama-7b"
+# adapter_dirs = ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"]
+
 base_model = "huggyllama/llama-7b"
-adapter_dirs = ["tloen/alpaca-lora-7b", "MBZUAI/bactrian-x-llama-7b-lora"]
+adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b-kv/checkpoint10/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b-kv/checkpoint20"]
 
 
 if __name__ == "__main__":

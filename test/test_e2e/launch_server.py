@@ -8,8 +8,14 @@ import os
 #base_model = "huggyllama/llama-7b"
 #adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b-kv/checkpoint10/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama-7b-kv/checkpoint20"]
 
-base_model = "meta-llama/Llama-2-13b-hf"
-adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b_ko/checkpoint1000/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b_ko/checkpoint2000"]
+#base_model = "meta-llama/Llama-2-13b-hf"
+#adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b_ko/checkpoint1000/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_llama2-13b_ko/checkpoint2000"]
+
+base_model = "Qwen/Qwen-7B-Chat"
+adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_qwen-chat-1/checkpoint1000/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_qwen-chat-1/checkpoint2000"]
+
+#base_model = "01-ai/Yi-34B-Chat"
+#adapter_dirs = ["/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_yi-34b-chat-3-ko/checkpoint1000/", "/slurmhome/huzx/Code/huzx_llama_factory.git/checkpoint_lora_ft_yi-34b-chat-3-ko/checkpoint2000"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

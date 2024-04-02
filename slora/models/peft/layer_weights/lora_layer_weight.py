@@ -185,7 +185,10 @@ class LoraLayerWeight:
 
         if f"{prefix}.k_proj.lora_B.weight" in weights:
             self.k_lora_B_home = weights[f"{prefix}.k_proj.lora_B.weight"][tp_idx[0]:tp_idx[1], :]
-            self.k_lora_B_home = self.k_lora_B_home.transpose(0, 1).contiguous().to(self.data_type_).pin_memory()
+            self.k_lora_B_home = self.k_lora_B_home.transpose(0, 1)
+            zero_padding = torch.zeros(tp_idx[1] - self.k_lora_B_home.shape[1], self.k_lora_B_home.shape[0]).T
+            self.k_lora_B_home = torch.concat((self.k_lora_B_home, zero_padding), dim=1)
+            self.k_lora_B_home = (self.k_lora_B_home.contiguous().to(self.data_type_).pin_memory())
             self.k_lora_B = None
 
         # v_proj A, B
@@ -196,7 +199,11 @@ class LoraLayerWeight:
 
         if f"{prefix}.v_proj.lora_B.weight" in weights:
             self.v_lora_B_home = weights[f"{prefix}.v_proj.lora_B.weight"][tp_idx[0]:tp_idx[1], :]
-            self.v_lora_B_home = self.v_lora_B_home.transpose(0, 1).contiguous().to(self.data_type_).pin_memory()
+            # self.v_lora_B_home = self.v_lora_B_home.transpose(0, 1).contiguous().to(self.data_type_).pin_memory()
+            self.v_lora_B_home = self.v_lora_B_home.transpose(0, 1)
+            zero_padding = torch.zeros(tp_idx[1] - self.v_lora_B_home.shape[1], self.v_lora_B_home.shape[0]).T
+            self.v_lora_B_home = torch.concat((self.v_lora_B_home, zero_padding), dim=1)
+            self.v_lora_B_home = (self.v_lora_B_home.contiguous().to(self.data_type_).pin_memory())
             self.v_lora_B = None
 
         # o_proj A, B

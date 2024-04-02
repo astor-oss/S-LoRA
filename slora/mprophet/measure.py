@@ -36,6 +36,15 @@ class ModelProphet:
                     # layer norm
                     m.hidden_size * 4)
             return size
+        elif "yi" in self.name.lower():
+            size = dbytes * (
+                    # self-attention:
+                    m.hidden_size ** 2 * 3 + m.hidden_size ** 2 +
+                    # mlp
+                    m.hidden_size * m.ffn_embed_dim * 3 +
+                    # layer norm
+                    m.hidden_size * 4)
+            return size
         else:
             raise NotImplementedError
 

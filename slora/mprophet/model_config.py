@@ -95,12 +95,21 @@ class ModelConfig:
                 self.ffn_embed_dim=11008
             else:
                 raise NotImplementedError
+        elif  "llama" in name.lower():
+            if "yi-34b-chat" in name.lower():
+                self.max_seq_len=4096
+                self.num_hidden_layers = 60
+                self.n_head = 8
+                self.hidden_size = 7168
+                self.ffn_embed_dim = 20480
+            else:
+                raise NotImplementedError
         else:
             raise NotImplementedError
 
 
     def _init_from_dict(self, config):
-        if "llama" in self.name.lower():
+        if "llama" in self.name.lower() or "yi" in self.name.lower():
             if "max_sequence_length" in config:
                 self.max_seq_len = config["max_sequence_length"]
             else:
